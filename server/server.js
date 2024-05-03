@@ -13,7 +13,7 @@ app.use(cors({
 app.get('/business/:business_id', routes.business);
 app.get('/business_reviews/:business_id', routes.business_reviews);
 app.get('/business_tips/:business_id', routes.business_tips);
-app.get('/search/business', routes.search_category);
+app.get('/search/businesses', routes.search_category);
 
 app.listen(config.server_port, () => {
   console.log(`Server running at http://${config.server_host}:${config.server_port}/`)
