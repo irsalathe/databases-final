@@ -39,11 +39,22 @@ const business = async function(req, res) {
     }
     else {
       console.log('Data retrieved from the database: ', data[0]);
-      res.json(data[0]);
+      result = data[0];
+      result.name = result.name || 'No name provided';
+      result.address = result.address || 'No address provided';
+      result.city = result.city || 'No city provided';
+      result.postal_code = result.postal_code || 'No postal code provided';
+      result.stars = result.stars || 'Number of stars not available for this business';
+      result.review_count = result.review_count || 'No reviews';
+      result.hours = result.hours || 'Hours of operation not available';
+      result.attributes = result.hours || 'Business attributes not available';
+      res.json(result);
     }
   });
 }
 
+//Bella: Route to get reviews from a business
+//At this point, the user has already selected a business and has now clicked the reviews button to look at the reviews
 const business_reviews = async function(req, res) {
   const businessID = req.params.business_id;
   const business_reviews_query = `
@@ -68,8 +79,34 @@ const business_reviews = async function(req, res) {
   });
 }
 
+//Bella: Rotue to get tips for a business
+//At this point, the user has already selected a business and has now clicked the tips button to look at the tips
+const business_tips = async function(req, res) {
+  const businessID = req.params.business_id;
+  const business_tips_query = `
+    SELECT date, text, compliment_count, business_id
+    FROM Tip
+    WHERE business_id = ?
+    ORDER BY date DESC
+  `;
+  console.log(`Fetching tips for business ID: ${businessID}`);
+  connection.query(business_tips_query, [businessID], (err, data) => {
+    if(err) {
+      console.log(err);
+      res.json({});
+    }
+    else if (data.length === 0) {
+      res.json({error: 'No tips found for this business'});
+    }
+    else {
+      res.json(data);
+    }
+  })
+}
+
 
 module.exports = {
   business,
-  business_reviews
+  business_reviews,
+  business_tips
 }
