@@ -45,10 +45,10 @@ export default function BusinessReviewsPage() {
                 <Card key={index} style={{ marginBottom: 8 }}>
                     <CardContent>
                         <Typography color="textSecondary" gutterBottom>
-                            Reviewer Name: {review.name}
+                            Reviewer Name: {review.name} ({review.review_count} reviews)
                         </Typography>
                         <Typography color="textSecondary" gutterBottom>
-                            Date: {review.date}
+                        Date: {new Date(review.date).toLocaleDateString()}
                         </Typography>
                         <Typography variant="body2">
                             {review.text}

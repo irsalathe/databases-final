@@ -45,10 +45,10 @@ export default function BusinessReviewsPage() {
                 <Card key={index} style={{ marginBottom: 8 }}>
                     <CardContent>
                         <Typography color="textSecondary" gutterBottom>
-                            Tipper Name: {tips.name}
+                            Tipper Name: {tips.name} ({tips.review_count} reviews)
                         </Typography>
                         <Typography color="textSecondary" gutterBottom>
-                            Date: {tips.date}
+                            Date: {new Date(tips.date).toLocaleDateString()}
                         </Typography>
                         <Typography variant="body2">
                             {tips.text}
