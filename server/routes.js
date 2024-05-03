@@ -132,9 +132,44 @@ const business_tips = async function(req, res) {
 }
 
 
+const search_category = async function(req, res) {
+  const { city, category, zipCode, stars, numTips } = req.query;
+  let categories_query = `SELECT name, address, city, postal_code, stars, review_count, hours, attributes 
+  FROM Business 
+  WHERE categories LIKE '%${category}%'`;
+  if (city) {
+    categories_query += ` AND city = ${city}`;
+  } 
+  if (zipCode) {
+    categories_query += ` AND postal_code = ${zipCode}`;
+  } 
+  if (stars) {
+    categories_query += ` AND stars between ${stars}.0 AND ${stars}.9`;
+  }
+
+  console.log(`Executing search query: ${categories_query}`);
+  
+  connection.query(categories_query, (err, data) => {
+    if (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while searching for businesses.' });
+      return;
+    }
+    
+    if (data.length === 0) {
+      res.status(404).json({ error: 'No businesses found matching the search criteria' });
+      return;
+    }
+
+    res.json(data);
+  });
+}
+
+
 
 module.exports = {
   business,
   business_reviews,
-  business_tips
+  business_tips,
+  search_category
 }
