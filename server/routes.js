@@ -23,42 +23,6 @@ connection.connect(err => {
 
 // Bella: Route to get general information on a Business that has been clicked on including reviews.
 //AKA what shows up when a user clicks on a business or searches for a business
-// const business = async function(req, res) {
-//   console.log("Accessing business details for ID:", req.params.business_id);
-//   const business_id = req.params.business_id;
-//   console.log(`Received request for business ID: ${business_id}`);
-//   const business_query = `
-//     SELECT name, address, city, postal_code, stars, review_count, hours, attributes
-//     FROM Business
-//     WHERE business_id = ?
-//   `;
-//   const top_5_reviews_query = `
-//     SELECT r.date, COALESCE(NULLIF(u.name, ''), 'Anonymous') AS name, r.text, r.stars, u.review_count
-//     FROM Review r JOIN User u ON r.user_id=u.user_id
-//     WHERE business_id = ?
-//     ORDER BY date DESC LIMIT 5;
-//   `;
-//   connection.query(business_query, [business_id], (err, data) => {
-//     if(err || data.length === 0) {
-//       console.log(err);
-//       res.json({});
-//     }
-
-//     else {
-//       console.log('Data retrieved from the database: ', data[0]);
-//       result = data[0];
-//       result.name = result.name || 'No name provided';
-//       result.address = result.address || 'No address provided';
-//       result.city = result.city || 'No city provided';
-//       result.postal_code = result.postal_code || 'No postal code provided';
-//       result.stars = result.stars || 'Number of stars not available for this business';
-//       result.review_count = result.review_count || 'No reviews';
-//       result.hours = result.hours || 'Hours of operation not available';
-//       result.attributes = result.attributes || 'Business attributes not available';
-//       res.json(result);
-//     }
-//   });
-// }
 const business = async function(req, res) {
   console.log("Accessing business details for ID:", req.params.business_id);
   const business_id = req.params.business_id;
