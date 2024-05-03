@@ -4,6 +4,10 @@ import { CssBaseline, ThemeProvider } from '@mui/material'
 import { indigo, amber } from '@mui/material/colors'
 import { createTheme } from "@mui/material/styles";
 
+import BusinessInfoPage from './pages/BusinessInfoPage';
+import BusinessReviewsPage from './pages/BusinessReviewsPage';
+import BusinessTipsPage from './pages/BusinessTipsPage';
+
 // import NavBar from './components/NavBar';
 // import HomePage from './pages/HomePage';
 // import AlbumsPage from './pages/AlbumsPage';
@@ -12,38 +16,28 @@ import { createTheme } from "@mui/material/styles";
 
 // createTheme enables you to customize the look and feel of your app past the default
 // in this case, we only change the color scheme
+
 export const theme = createTheme({
-  palette: {
-    primary: indigo,
-    secondary: amber,
-  },
-});
-
-function App() {
-  return (
-    <div>
-      <h1>Welcome to Guide to California (tester)</h1>
-      <p>This is a basic setup to continue testing.</p>
-    </div>
-  );
-}
-
-export default App;
-
-
+    palette: {
+      primary: indigo,
+      secondary: amber,
+    },
+  });
 // App is the root component of our application and as children contain all our pages
 // We use React Router's BrowserRouter and Routes components to define the pages for
 // our application, with each Route component representing a page and the common
 // NavBar component allowing us to navigate between pages (with hyperlinks)
-// export default function App() {
-//   return (
-//     <ThemeProvider theme={theme}>
-//       <CssBaseline />
-//       <BrowserRouter>
-//         <NavBar />
-//         <Routes>
-//         </Routes>
-//       </BrowserRouter>
-//     </ThemeProvider>
-//   );
-// }
+export default function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <BrowserRouter>
+        <Routes>
+        <Route path="/business/:business_id" element={<BusinessInfoPage />} />
+        <Route path="/business_reviews/:business_id" element={<BusinessReviewsPage />} />
+        <Route path="/business_tips/:business_id" element={<BusinessTipsPage />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
+  );
+}

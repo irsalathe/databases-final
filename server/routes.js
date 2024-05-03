@@ -25,14 +25,14 @@ connection.connect(err => {
 //AKA what shows up when a user clicks on a business or searches for a business
 const business = async function(req, res) {
   console.log("Accessing business details for ID:", req.params.business_id);
-  const businessID = req.params.business_id;
-  console.log(`Received request for business ID: ${businessID}`);
+  const business_id = req.params.business_id;
+  console.log(`Received request for business ID: ${business_id}`);
   const business_query = `
     SELECT name, address, city, postal_code, stars, review_count, hours, attributes
     FROM Business
     WHERE business_id = ?
   `;
-  connection.query(business_query, [businessID], (err, data) => {
+  connection.query(business_query, [business_id], (err, data) => {
     if(err || data.length === 0) {
       console.log(err);
       res.json({});
@@ -47,7 +47,7 @@ const business = async function(req, res) {
       result.stars = result.stars || 'Number of stars not available for this business';
       result.review_count = result.review_count || 'No reviews';
       result.hours = result.hours || 'Hours of operation not available';
-      result.attributes = result.hours || 'Business attributes not available';
+      result.attributes = result.attributes || 'Business attributes not available';
       res.json(result);
     }
   });
@@ -56,15 +56,15 @@ const business = async function(req, res) {
 //Bella: Route to get reviews from a business
 //At this point, the user has already selected a business and has now clicked the reviews button to look at the reviews
 const business_reviews = async function(req, res) {
-  const businessID = req.params.business_id;
+  const business_id = req.params.business_id;
   const business_reviews_query = `
     SELECT date, user_id, text, stars
     FROM Review
     WHERE business_id = ?
     ORDER BY date DESC
   `;
-  console.log(`Fetching reviews for business ID: ${businessID}`);
-  connection.query(business_reviews_query, [businessID], (err, data) => {
+  console.log(`Fetching reviews for business ID: ${business_id}`);
+  connection.query(business_reviews_query, [business_id], (err, data) => {
     console.log('Query executed, data received:', data);
     if(err) { 
       console.log(err);
@@ -82,15 +82,15 @@ const business_reviews = async function(req, res) {
 //Bella: Rotue to get tips for a business
 //At this point, the user has already selected a business and has now clicked the tips button to look at the tips
 const business_tips = async function(req, res) {
-  const businessID = req.params.business_id;
+  const business_id = req.params.business_id;
   const business_tips_query = `
     SELECT date, text, compliment_count, business_id
     FROM Tip
     WHERE business_id = ?
     ORDER BY date DESC
   `;
-  console.log(`Fetching tips for business ID: ${businessID}`);
-  connection.query(business_tips_query, [businessID], (err, data) => {
+  console.log(`Fetching tips for business ID: ${business_id}`);
+  connection.query(business_tips_query, [business_id], (err, data) => {
     if(err) {
       console.log(err);
       res.json({});
