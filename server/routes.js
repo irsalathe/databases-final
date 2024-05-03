@@ -24,8 +24,9 @@ connection.connect(err => {
 // Bella: Route to get general information on a Business that has been clicked on including reviews.
 //AKA what shows up when a user clicks on a business or searches for a business
 const business = async function(req, res) {
+  console.log("Accessing business details for ID:", req.params.business_id);
   const businessID = req.params.business_id;
-  console.log(`Received request for business ID: ${businessId}`);
+  console.log(`Received request for business ID: ${businessID}`);
   const business_query = `
     SELECT name, address, city, postal_code, stars, review_count, hours, attributes
     FROM Business
@@ -44,19 +45,21 @@ const business = async function(req, res) {
 }
 
 const business_reviews = async function(req, res) {
-  const businessID = req.params.business_id
+  const businessID = req.params.business_id;
   const business_reviews_query = `
     SELECT date, user_id, text, stars
-    FROM Reviews
+    FROM Review
     WHERE business_id = ?
     ORDER BY date DESC
   `;
+  console.log(`Fetching reviews for business ID: ${businessID}`);
   connection.query(business_reviews_query, [businessID], (err, data) => {
-    if(err) { //some businesses may have no reviews
+    console.log('Query executed, data received:', data);
+    if(err) { 
       console.log(err);
       res.json({});
     }
-    else if (data.length === 0) {
+    else if (data.length === 0) { //some businesses may have no reviews
       res.json({error: 'No reviews found for this business'});
     }
     else{
