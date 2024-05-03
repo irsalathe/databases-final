@@ -30,17 +30,19 @@ export default function BusinessReviewsPage() {
     if (error) return <Typography>Error loading tip information!</Typography>;
     if (!tips.length) return <Typography>No tips found!</Typography>;
 
-    return(
+    return (
         <div>
-            <Typography variant="h4" gutterBottom>Useful Tips</Typography>
-            <Button component={Link} to={`/business/${business_id}`} variant="contained" color="primary">
-                Back to Business Information
-            </Button>
-            <Button component={Link} to={`/business_reviews/${business_id}`} variant="contained" color ="primary">
-                Reviews
-            </Button>
+            <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+                <Typography variant="h4" gutterBottom>Useful Tips</Typography>
+                <Button component={Link} to={`/business/${business_id}`} variant="contained" color="primary" style={{ margin: '0 8px' }}>
+                    Back to Business Information
+                </Button>
+                <Button component={Link} to={`/business_reviews/${business_id}`} variant="contained" color ="primary">
+                    Reviews
+                </Button>
+            </div>
             {tips.map((tips, index) => (
-                <Card key={index} style={{marginBottom: 8}}>
+                <Card key={index} style={{ marginBottom: 8 }}>
                     <CardContent>
                         <Typography color="textSecondary" gutterBottom>
                             Tipper Name: {tips.name}
@@ -56,4 +58,5 @@ export default function BusinessReviewsPage() {
             ))}
         </div>
     );
+    
 }

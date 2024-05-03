@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { Button } from '@mui/material';
+import { Button, Typography} from '@mui/material';
 const config = require('../config.json');
 
 export default function BusinessInfoPage() {
@@ -30,9 +30,9 @@ export default function BusinessInfoPage() {
         );
     }, [business_id]);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error loading business information!</p>;
-    if (!business) return <p>No business found!</p>;
+    if (loading) return <Typography>Loading...</Typography>;
+    if (error) return <Typography>Error loading business information!</Typography>;
+    if (!business) return <Typography>No business found!</Typography>;
 
     const renderHoursTable = (hours) => {
         return(
@@ -56,23 +56,25 @@ export default function BusinessInfoPage() {
             </Table>
         );
     };
-
     return (
-        <div>
-            <h1>{business.name}</h1>
-            <Button component={Link} to={`/business_reviews/${business_id}`} variant = "contained" color = "primary">
+        <div style={{ textAlign: 'center' }}>
+            <Typography variant="h3" gutterBottom>{business.name}</Typography>
+            <Button component={Link} to={`/business_reviews/${business_id}`} variant="contained" color="primary">
                 Reviews
             </Button>
-            <Button component={Link} to={`/business_tips/${business_id}`} variant = "contained" color = "primary">
+            <Button component={Link} to={`/business_tips/${business_id}`} variant="contained" color="primary">
                 Tips
             </Button>
             <p>Address: {business.address}</p>
             <p>City and Postal Code: {business.city}, {business.postal_code}</p>
-            <p>Average Stars: {business.stars}</p>
-            <p>Total Reviews: {business.review_count}</p>
-            <p>Hours of Operation: {business.hours ? renderHoursTable(business.hours): 'Not Available'}</p> {/*make pretty*/}
+            <Typography variant="body1">
+                Stars: {"⭐".repeat(business.stars)} {business.stars} stars ({business.review_count} reviews)
+            </Typography>
+            <p>Hours of Operation: {business.hours ? renderHoursTable(business.hours) : 'Not Available'}</p>
+            {/* Make pretty */}
             <p>Attributes: {business.attributes}</p>
-
         </div>
     );
+    
 }
+

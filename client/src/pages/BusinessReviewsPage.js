@@ -32,13 +32,15 @@ export default function BusinessReviewsPage() {
 
     return (
         <div>
-            <Typography variant="h4" gutterBottom>Reviews</Typography>
-            <Button component={Link} to={`/business/${business_id}`} variant="contained" color="primary">
-                Back to Business Information
-            </Button>
-            <Button component={Link} to={`/business_tips/${business_id}`} variant="contained" color="primary">
-                Tips
-            </Button>
+            <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+                <Typography variant="h4" gutterBottom>Reviews</Typography>
+                <Button component={Link} to={`/business/${business_id}`} variant="contained" color="primary" style={{ margin: '0 8px' }}>
+                    Back to Business Information
+                </Button>
+                <Button component={Link} to={`/business_tips/${business_id}`} variant="contained" color="primary">
+                    Tips
+                </Button>
+            </div>
             {review.map((review, index) => (
                 <Card key={index} style={{ marginBottom: 8 }}>
                     <CardContent>
@@ -59,4 +61,5 @@ export default function BusinessReviewsPage() {
             ))}
         </div>
     );
+    
 }
