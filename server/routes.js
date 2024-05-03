@@ -58,8 +58,8 @@ const business = async function(req, res) {
 const business_reviews = async function(req, res) {
   const business_id = req.params.business_id;
   const business_reviews_query = `
-    SELECT date, user_id, text, stars
-    FROM Review
+    SELECT r.date, COALESCE(NULLIF(u.name, ''), 'Anonymous') AS name, r.text, r.stars
+    FROM Review r JOIN User u ON r.user_id=u.user_id
     WHERE business_id = ?
     ORDER BY date DESC
   `;
@@ -84,8 +84,8 @@ const business_reviews = async function(req, res) {
 const business_tips = async function(req, res) {
   const business_id = req.params.business_id;
   const business_tips_query = `
-    SELECT date, text, compliment_count, business_id
-    FROM Tip
+    SELECT t.date, t.text, u.name 
+    FROM Tip t JOIN User u ON t.user_id=u.user_id
     WHERE business_id = ?
     ORDER BY date DESC
   `;

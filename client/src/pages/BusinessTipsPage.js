@@ -1,9 +1,8 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Button, Card, CardContent, getTouchRippleUtilityClass, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { Button } from '@mui/material';
 const config = require('../config.json');
 
 export default function BusinessReviewsPage() {
@@ -27,21 +26,34 @@ export default function BusinessReviewsPage() {
         );
     }, [business_id]);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error loading tips information!</p>;
-    if (!tips) return <p>No tips found!</p>;
+    if (loading) return <Typography>Loading...</Typography>;
+    if (error) return <Typography>Error loading tip information!</Typography>;
+    if (!tips.length) return <Typography>No tips found!</Typography>;
 
-    return (
+    return(
         <div>
-            <h1>Tips</h1>
-            <Button component={Link} to={`/business/${business_id}`} variant = "contained" color = "primary">
+            <Typography variant="h4" gutterBottom>Useful Tips</Typography>
+            <Button component={Link} to={`/business/${business_id}`} variant="contained" color="primary">
                 Back to Business Information
             </Button>
-            <Button component={Link} to={`/business_reviews/${business_id}`} variant = "contained" color = "primary">
+            <Button component={Link} to={`/business_reviews/${business_id}`} variant="contained" color ="primary">
                 Reviews
             </Button>
-            <p>Date: </p>
-
+            {tips.map((tips, index) => (
+                <Card key={index} style={{marginBottom: 8}}>
+                    <CardContent>
+                        <Typography color="textSecondary" gutterBottom>
+                            Tipper Name: {tips.name}
+                        </Typography>
+                        <Typography color="textSecondary" gutterBottom>
+                            Date: {tips.date}
+                        </Typography>
+                        <Typography variant="body2">
+                            {tips.text}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            ))}
         </div>
     );
 }

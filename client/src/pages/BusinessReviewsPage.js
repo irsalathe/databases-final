@@ -1,9 +1,8 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Button, Card, CardContent, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { Button } from '@mui/material';
 const config = require('../config.json');
 
 export default function BusinessReviewsPage() {
@@ -27,21 +26,37 @@ export default function BusinessReviewsPage() {
         );
     }, [business_id]);
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error loading review information!</p>;
-    if (!review) return <p>No reviews found!</p>;
+    if (loading) return <Typography>Loading...</Typography>;
+    if (error) return <Typography>Error loading review information!</Typography>;
+    if (!review.length) return <Typography>No reviews found!</Typography>;
 
     return (
         <div>
-            <h1>Reviews</h1>
-            <Button component={Link} to={`/business/${business_id}`} variant = "contained" color = "primary">
+            <Typography variant="h4" gutterBottom>Reviews</Typography>
+            <Button component={Link} to={`/business/${business_id}`} variant="contained" color="primary">
                 Back to Business Information
             </Button>
-            <Button component={Link} to={`/business_tips/${business_id}`} variant = "contained" color = "primary">
+            <Button component={Link} to={`/business_tips/${business_id}`} variant="contained" color="primary">
                 Tips
             </Button>
-            <p>Date: </p>
-
+            {review.map((review, index) => (
+                <Card key={index} style={{ marginBottom: 8 }}>
+                    <CardContent>
+                        <Typography color="textSecondary" gutterBottom>
+                            Reviewer Name: {review.name}
+                        </Typography>
+                        <Typography color="textSecondary" gutterBottom>
+                            Date: {review.date}
+                        </Typography>
+                        <Typography variant="body2">
+                            {review.text}
+                        </Typography>
+                        <Typography variant="body1">
+                            Stars: {"⭐".repeat(review.stars)}
+                        </Typography>
+                    </CardContent>
+                </Card>
+            ))}
         </div>
     );
 }
