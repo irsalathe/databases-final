@@ -23,25 +23,27 @@ connection.connect(err => {
 
 // Bella: Route to get general information on a Business that has been clicked on including reviews.
 //AKA what shows up when a user clicks on a business or searches for a business
-router.get('/business/:business_id', (req, res) => {
-  const businessId = req.params.business_id;
-  connection.query(`
+const business = async function(req, res) {
+  const businessID = req.params.business_id;
+  console.log(`Received request for business ID: ${businessId}`);
+  const business_query = `
     SELECT name, address, city, postal_code, stars, review_count, hours, attributes
     FROM Business
     WHERE business_id = ?
-  `, [businessId], (err, data) => { 
-    if (err || data.length === 0) {  //if there is an error or if query empty (which shouldn't be possible since all business ID's have things)
+  `;
+  connection.query(business_query, [businessID], (err, data) => {
+    if(err || data.length === 0) {
       console.log(err);
       res.json({});
-    } else {
-      // Return results of query as an object, keeping only relevant data
+    }
+    else {
+      console.log('Data retrieved from the database: ', data[0]);
       res.json(data[0]);
     }
-  }); 
-});
+  });
+}
 
-//Bella: When a user is on a Business (from the above route) to get Reviews from this particular business
-router.get('/business/:business_id/reviews', (req, res) => {
+const business_reviews = async function(req, res) {
   const businessID = req.params.business_id
   const business_reviews_query = `
     SELECT date, user_id, text, stars
@@ -50,28 +52,21 @@ router.get('/business/:business_id/reviews', (req, res) => {
     ORDER BY date DESC
   `;
   connection.query(business_reviews_query, [businessID], (err, data) => {
-    if(err) { //some establishment may have no reviews
+    if(err) { //some businesses may have no reviews
       console.log(err);
       res.json({});
     }
-    else if (data.length === 0){//business has no reviews
-      res.json({ error: 'No reviews found for this business' });
+    else if (data.length === 0) {
+      res.json({error: 'No reviews found for this business'});
     }
     else{
       res.json(data);
     }
-  })
-})
+  });
+}
 
 
-// module.exports = {
-//   author,
-//   random,
-//   song,
-//   album,
-//   albums,
-//   album_songs,
-//   top_songs,
-//   top_albums,
-//   search_songs,
-// }
+module.exports = {
+  business,
+  business_reviews
+}
