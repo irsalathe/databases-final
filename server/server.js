@@ -15,6 +15,7 @@ app.get('/business_reviews/:business_id', routes.business_reviews);
 app.get('/business_tips/:business_id', routes.business_tips);
 app.get('/top_business_tips/:category', routes.top_business_tips)
 app.get('/search/businesses', routes.search_category);
+app.get('/top_business_postal', routes.top_business_reviews_by_postal_code);
 
 app.listen(config.server_port, () => {
   console.log(`Server running at http://${config.server_host}:${config.server_port}/`)

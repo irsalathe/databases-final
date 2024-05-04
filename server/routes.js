@@ -156,6 +156,42 @@ const top_business_tips = async function(req, res) {
   })
 }
 
+const top_business_reviews_by_postal_code = async function(req, res) {
+  const min_review = req.query.minrev || 5;
+  const b_review_count = req.query.revcount || 10;
+  const top_business_reviews_query = `
+    WITH UserReviewCounts AS (
+      SELECT user_id, COUNT(*) AS total_reviews
+      FROM Review
+      GROUP BY user_id
+      HAVING COUNT(*) >= ?
+    )
+    SELECT b.name AS business_name,
+        brp.postal_code,
+        brp.review_id,
+        brp.stars,
+        brp.useful
+    FROM Business b
+    JOIN BusinessesRankedByPostalCode brp ON b.business_id = brp.business_id
+    JOIN UserReviewCounts urc ON brp.user_id = urc.user_id
+    WHERE b.review_count >= ?
+    ORDER BY brp.postal_code, brp.useful DESC
+    LIMIT 25;`;
+
+  console.log(`Fetching top businesses by reviews`);
+
+  connection.query(top_business_reviews_query, [min_review, b_review_count], (err, data) => {
+    if (err) {
+      console.error(err);
+      res.json({ error: 'An error occurred while fetching top businesses by reviews' });
+    } else if (data.length === 0) {
+      res.json({ error: 'No businesses found' });
+    } else {
+      res.json(data);
+    }
+  });
+};
+
 
 const search_category = async function(req, res) {
   const { city, category, zipCode, stars, rev_count, numTips } = req.query;
@@ -200,11 +236,11 @@ const search_category = async function(req, res) {
 }
 
 
-
 module.exports = {
   business,
   business_reviews,
   business_tips,
   top_business_tips,
-  search_category
+  search_category,
+  top_business_reviews_by_postal_code
 }
