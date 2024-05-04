@@ -1,41 +1,83 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { TextField, Button, Radio, RadioGroup, FormControlLabel } from '@mui/material';
+import { Box, Typography, Button, TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
+import SearchIcon from '@mui/icons-material/Search';
+const config = require('../config.json');
 
-export default function LandingPage() {
-    const navigate = useNavigate();
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchBy, setSearchBy] = useState('city'); // Default search by city
+export default function HomePage() {
+    const [searchParams, setSearchParams] = useState({
+        category: '',
+        city: '',
+        postalCode: ''
+    });
 
-
-    const handleSearch = () => {
-        if (searchQuery.trim() !== '') {
-            // Redirect to search page with the search query
-            navigate(`/search/businesses?${searchBy}=${searchQuery}`);
-        }
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+        setSearchParams({ ...searchParams, [name]: value });
     };
-
+    
+    const search = () => {
+        const { category, city, postalCode } = searchParams;
+        let searchQuery = '';
+        if (category) searchQuery += `categories=${category}`;
+        if (city) {
+            if (searchQuery !== '') searchQuery += '&';
+            searchQuery += `city=${city}`;
+        }
+        if (postalCode) {
+            if (searchQuery !== '') searchQuery += '&';
+            searchQuery += `postal_code=${postalCode}`;
+        }
+        window.location.href = `/general_search?${searchQuery}`;
+    };
+    
+    
     return (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <h1>Welcome to _ Search</h1>
-            <TextField
-                label="Search by category"
-                variant="outlined"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ margin: '20px' }}
-            />
-            <RadioGroup
-                aria-label="searchBy"
-                name="searchBy"
-                value={searchBy}
-                onChange={(e) => setSearchBy(e.target.value)}>
-                <FormControlLabel value="city" control={<Radio />} label="City" />
-                <FormControlLabel value="zipCode" control={<Radio />} label="Zip Code" />
-            </RadioGroup>
-            <Button variant="contained" onClick={handleSearch}>Search</Button>
+        <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            minHeight="100vh"
+            textAlign="center"
+        >
+            <Typography variant="h2" gutterBottom>Welcome to a Traveler's Guide to California!</Typography>
+            <Typography variant="h4" gutterBottom>Figure out where to go! (or where not to go)</Typography>
+            <Box display="flex" alignItems="center" justifyContent="center" marginBottom="20px">
+                <TextField
+                    name="category"
+                    label="Category"
+                    variant="outlined"
+                    margin="normal"
+                    value={searchParams.category}
+                    onChange={handleChange}
+                />
+                <TextField
+                    name="city"
+                    label="City"
+                    variant="outlined"
+                    margin="normal"
+                    value={searchParams.city}
+                    onChange={handleChange}
+                />
+                <TextField
+                    name="postalCode"
+                    label="Postal Code"
+                    variant="outlined"
+                    margin="normal"
+                    value={searchParams.postalCode}
+                    onChange={handleChange}
+                />
+                <Button onClick={search} startIcon={<SearchIcon />} variant="contained" style={{ marginLeft: '10px' }}>
+                    Search
+                </Button>
+            </Box>
             <Button component={Link} to={`/select-category-for-tips`} variant="contained">Explore Top Tips By Business Category</Button>
+<<<<<<< HEAD
+        </Box>
+=======
+            <Button component={Link} to={`/select-min-review-for-ranked`} variant="contained">Explore Top Business Reviews by Postal Code</Button>
         </div>
+>>>>>>> 2a211859221d958a8519bfddac6d27ec77af8c28
     );
 }

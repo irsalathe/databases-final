@@ -48,7 +48,7 @@ export default function BusinessReviewsPage() {
                             Reviewer Name: {review.name} ({review.review_count} reviews)
                         </Typography>
                         <Typography color="textSecondary" gutterBottom>
-                        Date: {new Date(review.date).toLocaleDateString()}
+                            Date: {new Date(review.date).toLocaleDateString()}
                         </Typography>
                         <Typography variant="body2">
                             {review.text}

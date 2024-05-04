@@ -1,6 +1,7 @@
 const mysql = require('mysql')
 const config = require('./config.json')
 const express = require('express');
+const { post } = require('superagent');
 const router = express.Router();
 
 // Creates MySQL connection using database credential provided in config.json
@@ -130,7 +131,7 @@ const business_tips = async function(req, res) {
     }
   })
 }
-//top businesses by tips (Query 9)
+//top tips for businesses by category (Query 9)
 const top_business_tips = async function(req, res) {
   const category = req.params.category;
   const top_business_by_tips_query =`
@@ -287,5 +288,6 @@ module.exports = {
   search_category,
   active_users,
   getUserDetails,
-  validateFriends
+  validateFriends,
+  general_search
 }

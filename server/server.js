@@ -18,6 +18,7 @@ app.get('/search/businesses', routes.search_category);
 app.get('/active_users', routes.active_users);
 app.get('/user/:user_id', routes.getUserDetails);
 app.get('/isvalid/:user_id', routes.validateFriends);
+app.get('/general_search', routes.general_search); 
 
 app.listen(config.server_port, () => {
   console.log(`Server running at http://${config.server_host}:${config.server_port}/`)
