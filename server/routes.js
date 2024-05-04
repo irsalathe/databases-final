@@ -158,16 +158,16 @@ const top_business_tips = async function(req, res) {
 }
 
 const general_search = async function(req, res) {
-  const { city, postal_code, category } = req.query;
+  const { city, postal_code, categories } = req.query;
   let general_search_query = `
       SELECT business_id, name, address, city, postal_code, stars, review_count
       FROM Business
   `;
   const params = [];
   let conditions = [];
-  if (category) {
+  if (categories) {
       conditions.push("LOWER(categories) LIKE LOWER(?)");
-      params.push(`%${category}%`);
+      params.push(`%${categories}%`);
   }
   if (city) {
       conditions.push("LOWER(city) = LOWER(?)");
@@ -177,6 +177,7 @@ const general_search = async function(req, res) {
       conditions.push("postal_code = ?");
       params.push(postal_code);
   }
+  console.log(conditions);
   if (conditions.length > 0) {
       general_search_query += " WHERE " + conditions.join(" AND ");
   }
@@ -191,21 +192,13 @@ const general_search = async function(req, res) {
             console.log("0 entries");
             res.json({ error: 'No businesses found with these requirements' });
         } else {
-            console.log(data);
+            // console.log(data);
             res.json(data);
         }
-    connection.query(top_business_reviews_query, [min_review, b_review_count], (err, data) => {
-      if (err) {
-        console.log(err);
-        res.json({});
-      } else if (data.length === 0) {
-        res.json({ error: 'No businesses found' });
-      } else {
-        res.json(data);
-      }
-    });
-  }
-  
+    
+  })
+}
+
 const top_business_reviews_by_postal_code = async function(req, res) {
   const min_review = req.query.minrev || 5;
   const b_review_count = req.query.revcount || 10;
@@ -229,8 +222,17 @@ const top_business_reviews_by_postal_code = async function(req, res) {
     ORDER BY brp.postal_code, brp.useful DESC
     LIMIT 25;`;
 
-
-
+    connection.query(top_business_reviews_query, [min_review, b_review_count], (err, data) => {
+      if (err) {
+        console.log(err);
+        res.json({});
+      } else if (data.length === 0) {
+        res.json({ error: 'No businesses found' });
+      } else {
+        res.json(data);
+      }
+    });
+  }
 
 const search_category = async function(req, res) {
   const { city, category, zipCode, stars, rev_count, numTips } = req.query;
@@ -282,5 +284,6 @@ module.exports = {
   business_tips,
   top_business_tips,
   search_category,
-  general_search
+  general_search,
+  top_business_reviews_by_postal_code
 }
