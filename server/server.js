@@ -13,6 +13,7 @@ app.use(cors({
 app.get('/business/:business_id', routes.business);
 app.get('/business_reviews/:business_id', routes.business_reviews);
 app.get('/business_tips/:business_id', routes.business_tips);
+app.get('/top_business_tips/:category', routes.top_business_tips)
 app.get('/search/businesses', routes.search_category);
 
 app.listen(config.server_port, () => {

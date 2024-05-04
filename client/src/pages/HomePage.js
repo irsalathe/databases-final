@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Radio, RadioGroup, FormControlLabel } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 export default function LandingPage() {
     const navigate = useNavigate();
@@ -34,6 +35,7 @@ export default function LandingPage() {
                 <FormControlLabel value="zipCode" control={<Radio />} label="Zip Code" />
             </RadioGroup>
             <Button variant="contained" onClick={handleSearch}>Search</Button>
+            <Button component={Link} to={`/select-category-for-tips`} variant="contained">Explore Top Tips By Business Category</Button>
         </div>
     );
 }

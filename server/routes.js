@@ -130,6 +130,31 @@ const business_tips = async function(req, res) {
     }
   })
 }
+//top businesses by tips (Query 9)
+const top_business_tips = async function(req, res) {
+  const category = req.params.category;
+  const top_business_by_tips_query =`
+    SELECT b.name, b.address, b.stars, t.text AS tip_text, t.compliment_count
+    FROM Business b
+    JOIN Tip t ON b.business_id = t.business_id
+    WHERE b.categories LIKE CONCAT('%', ?, '%') 
+    ORDER BY t.compliment_count DESC, b.stars DESC
+    LIMIT 10;
+  `;
+  console.log(`Fetching top businesses for category: ${category}`);
+  connection.query(top_business_by_tips_query, [category], (err, data) => {
+    if(err) {
+      console.log(err);
+      res.json({});
+    }
+    else if (data.length === 0){
+      res.json({error: 'No businesses found for this category'});
+    }
+    else{
+      res.json(data);
+    }
+  })
+}
 
 
 const search_category = async function(req, res) {
@@ -180,5 +205,6 @@ module.exports = {
   business,
   business_reviews,
   business_tips,
+  top_business_tips,
   search_category
 }
