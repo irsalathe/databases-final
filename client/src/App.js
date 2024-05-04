@@ -7,6 +7,7 @@ import { createTheme } from "@mui/material/styles";
 import BusinessInfoPage from './pages/BusinessInfoPage';
 import BusinessReviewsPage from './pages/BusinessReviewsPage';
 import BusinessTipsPage from './pages/BusinessTipsPage';
+import HomePage from './pages/HomePage';
 
 // import NavBar from './components/NavBar';
 // import HomePage from './pages/HomePage';
@@ -33,6 +34,7 @@ export default function App() {
       <CssBaseline />
       <BrowserRouter>
         <Routes>
+        <Route path="/" element={<HomePage />} />
         <Route path="/business/:business_id" element={<BusinessInfoPage />} />
         <Route path="/business_reviews/:business_id" element={<BusinessReviewsPage />} />
         <Route path="/business_tips/:business_id" element={<BusinessTipsPage />} />

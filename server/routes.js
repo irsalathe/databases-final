@@ -136,12 +136,15 @@ const search_category = async function(req, res) {
   const { city, category, zipCode, stars, rev_count, numTips } = req.query;
   let categories_query = `SELECT name, address, city, postal_code, stars, review_count, hours, attributes, total_tips 
   FROM Business b LEFT JOIN business_tip_count t ON b.business_id = t.business_id 
-  WHERE categories LIKE '%${category}%'`;
+  WHERE`;
   if (city) {
-    categories_query += ` AND city = ${city}`;
+    categories_query += ` city = '${city}'`;
   } 
-  if (zipCode) {
-    categories_query += ` AND postal_code = ${zipCode}`;
+  else if (zipCode) {
+    categories_query += ` postal_code = ${zipCode}`;
+  }
+  if (category) {
+    categories_query += ` AND categories LIKE '%${category}%'`;
   } 
   if (stars) {
     categories_query += ` AND stars between ${stars}.0 AND ${stars}.9`;
