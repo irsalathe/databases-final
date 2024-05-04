@@ -168,12 +168,13 @@ const top_business_reviews_by_postal_code = async function(req, res) {
     )
     SELECT b.name AS business_name,
         brp.postal_code,
-        brp.review_id,
+        r.text,
         brp.stars,
         brp.useful
     FROM Business b
     JOIN BusinessesRankedByPostalCode brp ON b.business_id = brp.business_id
     JOIN UserReviewCounts urc ON brp.user_id = urc.user_id
+    JOIN Review r ON brp.review_id = r.review_id
     WHERE b.review_count >= ?
     ORDER BY brp.postal_code, brp.useful DESC
     LIMIT 25;`;
@@ -182,8 +183,8 @@ const top_business_reviews_by_postal_code = async function(req, res) {
 
   connection.query(top_business_reviews_query, [min_review, b_review_count], (err, data) => {
     if (err) {
-      console.error(err);
-      res.json({ error: 'An error occurred while fetching top businesses by reviews' });
+      console.log(err);
+      res.json({});
     } else if (data.length === 0) {
       res.json({ error: 'No businesses found' });
     } else {

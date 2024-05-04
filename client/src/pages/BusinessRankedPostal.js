@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Typography, Button, Table, TableHead, TableBody, TableCell, TableRow } from '@mui/material';
+const config = require('../config.json');
 
 export default function BusinessRankedPostal() {
     const location = useLocation();
@@ -13,21 +14,20 @@ export default function BusinessRankedPostal() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                if (minrev && revcount) {
-                    const response = await fetch(`/top_business_postal?minrev=${minrev}&revcount=${revcount}`);
-                    const data = await response.json();
-                    setTopBusinesses(data);
+        if (minrev && revcount) {
+            fetch(`http://${config.server_host}:${config.server_port}/top_business_postal?minrev=${minrev}&revcount=${revcount}`)
+            .then(res => res.json())
+            .then(
+                resJson => {
+                    setTopBusinesses(resJson);
+                    setLoading(false);
+                },
+                error => {
+                    setError(error);
                     setLoading(false);
                 }
-            } catch (error) {
-                setError(error);
-                setLoading(false);
-            }
-        };
-    
-        fetchData();
+            );
+        }
     }, [minrev, revcount]);
 
     if (loading) return <Typography>Loading...</Typography>;
@@ -43,7 +43,7 @@ export default function BusinessRankedPostal() {
                     <TableRow>
                         <TableCell>Business Name</TableCell>
                         <TableCell>Postal Code</TableCell>
-                        <TableCell>Review ID</TableCell>
+                        <TableCell>Review</TableCell>
                         <TableCell>Stars</TableCell>
                         <TableCell>Useful</TableCell>
                     </TableRow>
@@ -53,7 +53,7 @@ export default function BusinessRankedPostal() {
                         <TableRow key={index}>
                             <TableCell>{business.business_name}</TableCell>
                             <TableCell>{business.postal_code}</TableCell>
-                            <TableCell>{business.review_id}</TableCell>
+                            <TableCell>{business.text}</TableCell>
                             <TableCell>{business.stars}</TableCell>
                             <TableCell>{business.useful}</TableCell>
                         </TableRow>
