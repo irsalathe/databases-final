@@ -180,24 +180,55 @@ const general_search = async function(req, res) {
   if (conditions.length > 0) {
       general_search_query += " WHERE " + conditions.join(" AND ");
   }
-
   general_search_query += " ORDER BY stars DESC";
-
-  console.log(`Executing search query: ${general_search_query}`);
-
-  connection.query(general_search_query, params, (err, data) => {
+    console.log(`Executing search query: ${general_search_query}`);
+  
+    connection.query(general_search_query, params, (err, data) => {
+        if (err) {
+            console.log(err);
+            res.json({ error: 'An error occurred while fetching data.' });
+        } else if (data.length === 0) {
+            console.log("0 entries");
+            res.json({ error: 'No businesses found with these requirements' });
+        } else {
+            console.log(data);
+            res.json(data);
+        }
+    connection.query(top_business_reviews_query, [min_review, b_review_count], (err, data) => {
       if (err) {
-          console.log(err);
-          res.json({ error: 'An error occurred while fetching data.' });
+        console.log(err);
+        res.json({});
       } else if (data.length === 0) {
-          console.log("0 entries");
-          res.json({ error: 'No businesses found with these requirements' });
+        res.json({ error: 'No businesses found' });
       } else {
-          console.log(data);
-          res.json(data);
+        res.json(data);
       }
-  });
-}
+    });
+  }
+  
+const top_business_reviews_by_postal_code = async function(req, res) {
+  const min_review = req.query.minrev || 5;
+  const b_review_count = req.query.revcount || 10;
+  const top_business_reviews_query = `
+    WITH UserReviewCounts AS (
+      SELECT user_id, COUNT(*) AS total_reviews
+      FROM Review
+      GROUP BY user_id
+      HAVING COUNT(*) >= ?
+    )
+    SELECT b.name AS business_name,
+        brp.postal_code,
+        r.text,
+        brp.stars,
+        brp.useful
+    FROM Business b
+    JOIN BusinessesRankedByPostalCode brp ON b.business_id = brp.business_id
+    JOIN UserReviewCounts urc ON brp.user_id = urc.user_id
+    JOIN Review r ON brp.review_id = r.review_id
+    WHERE b.review_count >= ?
+    ORDER BY brp.postal_code, brp.useful DESC
+    LIMIT 25;`;
+
 
 
 

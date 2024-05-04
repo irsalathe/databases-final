@@ -73,6 +73,11 @@ export default function HomePage() {
                 </Button>
             </Box>
             <Button component={Link} to={`/select-category-for-tips`} variant="contained">Explore Top Tips By Business Category</Button>
+<<<<<<< HEAD
         </Box>
+=======
+            <Button component={Link} to={`/select-min-review-for-ranked`} variant="contained">Explore Top Business Reviews by Postal Code</Button>
+        </div>
+>>>>>>> 2a211859221d958a8519bfddac6d27ec77af8c28
     );
 }
