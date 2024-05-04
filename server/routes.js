@@ -1,6 +1,7 @@
 const mysql = require('mysql')
 const config = require('./config.json')
 const express = require('express');
+const { post } = require('superagent');
 const router = express.Router();
 
 // Creates MySQL connection using database credential provided in config.json
@@ -130,7 +131,7 @@ const business_tips = async function(req, res) {
     }
   })
 }
-//top businesses by tips (Query 9)
+//top tips for businesses by category (Query 9)
 const top_business_tips = async function(req, res) {
   const category = req.params.category;
   const top_business_by_tips_query =`
@@ -156,41 +157,48 @@ const top_business_tips = async function(req, res) {
   })
 }
 
-const top_business_reviews_by_postal_code = async function(req, res) {
-  const min_review = req.query.minrev || 5;
-  const b_review_count = req.query.revcount || 10;
-  const top_business_reviews_query = `
-    WITH UserReviewCounts AS (
-      SELECT user_id, COUNT(*) AS total_reviews
-      FROM Review
-      GROUP BY user_id
-      HAVING COUNT(*) >= ?
-    )
-    SELECT b.name AS business_name,
-        brp.postal_code,
-        brp.review_id,
-        brp.stars,
-        brp.useful
-    FROM Business b
-    JOIN BusinessesRankedByPostalCode brp ON b.business_id = brp.business_id
-    JOIN UserReviewCounts urc ON brp.user_id = urc.user_id
-    WHERE b.review_count >= ?
-    ORDER BY brp.postal_code, brp.useful DESC
-    LIMIT 25;`;
+const general_search = async function(req, res) {
+  const { city, postal_code, category } = req.query;
+  let general_search_query = `
+      SELECT business_id, name, address, city, postal_code, stars, review_count
+      FROM Business
+  `;
+  const params = [];
+  let conditions = [];
+  if (category) {
+      conditions.push("LOWER(categories) LIKE LOWER(?)");
+      params.push(`%${category}%`);
+  }
+  if (city) {
+      conditions.push("LOWER(city) = LOWER(?)");
+      params.push(city);
+  }
+  if (postal_code) {
+      conditions.push("postal_code = ?");
+      params.push(postal_code);
+  }
+  if (conditions.length > 0) {
+      general_search_query += " WHERE " + conditions.join(" AND ");
+  }
 
-  console.log(`Fetching top businesses by reviews`);
+  general_search_query += " ORDER BY stars DESC";
 
-  connection.query(top_business_reviews_query, [min_review, b_review_count], (err, data) => {
-    if (err) {
-      console.error(err);
-      res.json({ error: 'An error occurred while fetching top businesses by reviews' });
-    } else if (data.length === 0) {
-      res.json({ error: 'No businesses found' });
-    } else {
-      res.json(data);
-    }
+  console.log(`Executing search query: ${general_search_query}`);
+
+  connection.query(general_search_query, params, (err, data) => {
+      if (err) {
+          console.log(err);
+          res.json({ error: 'An error occurred while fetching data.' });
+      } else if (data.length === 0) {
+          console.log("0 entries");
+          res.json({ error: 'No businesses found with these requirements' });
+      } else {
+          console.log(data);
+          res.json(data);
+      }
   });
-};
+}
+
 
 
 const search_category = async function(req, res) {
@@ -236,11 +244,12 @@ const search_category = async function(req, res) {
 }
 
 
+
 module.exports = {
   business,
   business_reviews,
   business_tips,
   top_business_tips,
   search_category,
-  top_business_reviews_by_postal_code
+  general_search
 }

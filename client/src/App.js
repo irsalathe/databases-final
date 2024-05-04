@@ -10,14 +10,7 @@ import BusinessTipsPage from './pages/BusinessTipsPage';
 import HomePage from './pages/HomePage';
 import TopBusinessesTipPage from './pages/TopBusinessesTipPage';
 import CategorySearchForTipsPage from './pages/CategorySearchForTipsPage';
-// import NavBar from './components/NavBar';
-// import HomePage from './pages/HomePage';
-// import AlbumsPage from './pages/AlbumsPage';
-// import SongsPage from './pages/SongsPage';
-// import AlbumInfoPage from './pages/AlbumInfoPage'
-
-// createTheme enables you to customize the look and feel of your app past the default
-// in this case, we only change the color scheme
+import GeneralSearchResultsPage from './pages/GeneralSearchResultsPage';
 
 export const theme = createTheme({
     palette: {
@@ -41,6 +34,7 @@ export default function App() {
         <Route path="/business_tips/:business_id" element={<BusinessTipsPage />} />
         <Route path="/select-category-for-tips" element={<CategorySearchForTipsPage />} />
         <Route path="/top_business_tips/:category" element={<TopBusinessesTipPage />} />
+        <Route path="/general_search" element={<GeneralSearchResultsPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
