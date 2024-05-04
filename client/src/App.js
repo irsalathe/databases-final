@@ -10,6 +10,8 @@ import BusinessTipsPage from './pages/BusinessTipsPage';
 import HomePage from './pages/HomePage';
 import TopBusinessesTipPage from './pages/TopBusinessesTipPage';
 import CategorySearchForTipsPage from './pages/CategorySearchForTipsPage';
+import ActiveUsers from './pages/ActiveUsers';
+import UserPage from './pages/UserPage';
 import GeneralSearchResultsPage from './pages/GeneralSearchResultsPage';
 import BusinessRankedPostal from './pages/BusinessRankedPostal';
 import SelectMinReviewForRanked from './pages/SelectMinReviewForRanked';
@@ -27,11 +29,8 @@ export const theme = createTheme({
       primary: indigo,
       secondary: amber,
     },
-  });
-// App is the root component of our application and as children contain all our pages
-// We use React Router's BrowserRouter and Routes components to define the pages for
-// our application, with each Route component representing a page and the common
-// NavBar component allowing us to navigate between pages (with hyperlinks)
+});
+
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -44,6 +43,8 @@ export default function App() {
         <Route path="/business_tips/:business_id" element={<BusinessTipsPage />} />
         <Route path="/select-category-for-tips" element={<CategorySearchForTipsPage />} />
         <Route path="/top_business_tips/:category" element={<TopBusinessesTipPage />} />
+        <Route path="/active_users" element={<ActiveUsers />} /> 
+       <Route path="/user/:userId" element={<UserPage />} />
         <Route path="/general_search" element={<GeneralSearchResultsPage />} />
         <Route path="/select-min-review-for-ranked" element={<SelectMinReviewForRanked />} />
         <Route path="/top_business_postal" element={<BusinessRankedPostal />} />
