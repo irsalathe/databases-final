@@ -157,6 +157,83 @@ const top_business_tips = async function(req, res) {
   })
 }
 
+const general_search = async function(req, res) {
+  const { city, postal_code, categories } = req.query;
+  let general_search_query = `
+      SELECT business_id, name, address, city, postal_code, stars, review_count
+      FROM Business
+  `;
+  const params = [];
+  let conditions = [];
+  if (categories) {
+      conditions.push("LOWER(categories) LIKE LOWER(?)");
+      params.push(`%${categories}%`);
+  }
+  if (city) {
+      conditions.push("LOWER(city) = LOWER(?)");
+      params.push(city);
+  }
+  if (postal_code) {
+      conditions.push("postal_code = ?");
+      params.push(postal_code);
+  }
+  console.log(conditions);
+  if (conditions.length > 0) {
+      general_search_query += " WHERE " + conditions.join(" AND ");
+  }
+  general_search_query += " ORDER BY stars DESC";
+    console.log(`Executing search query: ${general_search_query}`);
+  
+    connection.query(general_search_query, params, (err, data) => {
+        if (err) {
+            console.log(err);
+            res.json({ error: 'An error occurred while fetching data.' });
+        } else if (data.length === 0) {
+            console.log("0 entries");
+            res.json({ error: 'No businesses found with these requirements' });
+        } else {
+            // console.log(data);
+            res.json(data);
+        }
+    
+  })
+}
+
+const top_business_reviews_by_postal_code = async function(req, res) {
+  const min_review = req.query.minrev || 5;
+  const b_review_count = req.query.revcount || 10;
+  const top_business_reviews_query = `
+    WITH UserReviewCounts AS (
+      SELECT user_id, COUNT(*) AS total_reviews
+      FROM Review
+      GROUP BY user_id
+      HAVING COUNT(*) >= ?
+    )
+    SELECT b.name AS business_name,
+        brp.postal_code,
+        r.text,
+        brp.stars,
+        brp.useful
+    FROM Business b
+    JOIN BusinessesRankedByPostalCode brp ON b.business_id = brp.business_id
+    JOIN UserReviewCounts urc ON brp.user_id = urc.user_id
+    JOIN Review r ON brp.review_id = r.review_id
+    WHERE b.review_count >= ?
+    ORDER BY brp.postal_code, brp.useful DESC
+    LIMIT 25;`;
+
+    connection.query(top_business_reviews_query, [min_review, b_review_count], (err, data) => {
+      if (err) {
+        console.log(err);
+        res.json({});
+      } else if (data.length === 0) {
+        res.json({ error: 'No businesses found' });
+      } else {
+        res.json(data);
+      }
+    });
+  }
+  
 //Jack's query 1
 const active_users = async function(req, res) {
   const limit = parseInt(req.query.limit, 10) || 10;
@@ -286,6 +363,8 @@ module.exports = {
   business_tips,
   top_business_tips,
   search_category,
+  general_search,
+  top_business_reviews_by_postal_code,
   active_users,
   getUserDetails,
   validateFriends,
