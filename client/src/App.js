@@ -10,6 +10,8 @@ import BusinessTipsPage from './pages/BusinessTipsPage';
 import HomePage from './pages/HomePage';
 import TopBusinessesTipPage from './pages/TopBusinessesTipPage';
 import CategorySearchForTipsPage from './pages/CategorySearchForTipsPage';
+import BusinessRankedPostal from './pages/BusinessRankedPostal';
+import SelectMinReviewForRanked from './pages/SelectMinReviewForRanked';
 // import NavBar from './components/NavBar';
 // import HomePage from './pages/HomePage';
 // import AlbumsPage from './pages/AlbumsPage';
@@ -41,6 +43,8 @@ export default function App() {
         <Route path="/business_tips/:business_id" element={<BusinessTipsPage />} />
         <Route path="/select-category-for-tips" element={<CategorySearchForTipsPage />} />
         <Route path="/top_business_tips/:category" element={<TopBusinessesTipPage />} />
+        <Route path="/select-min-review-for-ranked" element={<SelectMinReviewForRanked />} />
+        <Route path="/top_business_postal" element={<BusinessRankedPostal />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -36,6 +36,7 @@ export default function LandingPage() {
             </RadioGroup>
             <Button variant="contained" onClick={handleSearch}>Search</Button>
             <Button component={Link} to={`/select-category-for-tips`} variant="contained">Explore Top Tips By Business Category</Button>
+            <Button component={Link} to={`/select-min-review-for-ranked`} variant="contained">Explore Top Businesses by Postal Code</Button>
         </div>
     );
 }
