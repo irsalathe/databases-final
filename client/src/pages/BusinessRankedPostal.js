@@ -23,7 +23,7 @@ export default function BusinessRankedPostal() {
                     setLoading(false);
                 },
                 error => {
-                    setError(error);
+                    setError(error);           
                     setLoading(false);
                 }
             );

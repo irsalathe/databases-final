@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField, Typography } from '@mui/material';
+const config = require('../config.json');
 
 function SelectMinReviewForRanked() {
     const [minrev, setMinRev] = useState('');
