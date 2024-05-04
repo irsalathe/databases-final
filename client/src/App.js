@@ -15,6 +15,7 @@ import UserPage from './pages/UserPage';
 import GeneralSearchResultsPage from './pages/GeneralSearchResultsPage';
 import BusinessRankedPostal from './pages/BusinessRankedPostal';
 import SelectMinReviewForRanked from './pages/SelectMinReviewForRanked';
+import GeneralSearchFilteredResultsPage from './pages/GeneralSearchFilteredResultPage';
 // import NavBar from './components/NavBar';
 // import HomePage from './pages/HomePage';
 // import AlbumsPage from './pages/AlbumsPage';
@@ -48,6 +49,7 @@ export default function App() {
         <Route path="/general_search" element={<GeneralSearchResultsPage />} />
         <Route path="/select-min-review-for-ranked" element={<SelectMinReviewForRanked />} />
         <Route path="/top_business_postal" element={<BusinessRankedPostal />} />
+        <Route path="/search/businesses" element={<GeneralSearchFilteredResultsPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -285,45 +285,54 @@ const getUserDetails = async function(req, res) {
 
 const search_category = async function(req, res) {
   const { city, category, zipCode, stars, rev_count, numTips } = req.query;
-  let categories_query = `SELECT name, address, city, postal_code, stars, review_count, hours, attributes, total_tips 
-  FROM Business b LEFT JOIN business_tip_count t ON b.business_id = t.business_id 
-  WHERE`;
-  if (city) {
-    categories_query += ` city = '${city}'`;
-  } 
-  else if (zipCode) {
-    categories_query += ` postal_code = ${zipCode}`;
-  }
+  let categories_query = `
+      SELECT b.business_id, name, address, city, postal_code, stars, review_count, total_tips 
+      FROM Business b LEFT JOIN business_tip_count t ON b.business_id = t.business_id
+  `;
+  const params = [];
+  let conditions = [];
   if (category) {
-    categories_query += ` AND categories LIKE '%${category}%'`;
-  } 
+      conditions.push("LOWER(categories) LIKE LOWER(?)");
+      params.push(`%${category}%`);
+  }
+  if (city) {
+      conditions.push("LOWER(city) = LOWER(?)");
+      params.push(city);
+  }
+  if (zipCode) {
+      conditions.push("postal_code = ?");
+      params.push(zipCode);
+  }
   if (stars) {
-    categories_query += ` AND stars between ${stars}.0 AND ${stars}.9`;
+      conditions.push(`stars between ${stars}.0 AND ${stars}.9`);
   }
   if (rev_count) {
-    categories_query += ` AND review_count <= ${rev_count}`;
+      conditions.push("review_count >= ?");
+      params.push(rev_count);
   }
   if (numTips) {
-    categories_query += ` AND total_tips >= ${numTips}`;
+      conditions.push("total_tips >= ?");
+      params.push(numTips);
   }
-
+  if (conditions.length > 0) {
+      categories_query += " WHERE " + conditions.join(" AND ");
+  }
+  categories_query += " ORDER BY stars DESC";
   console.log(`Executing search query: ${categories_query}`);
   
-  connection.query(categories_query, (err, data) => {
-    if (err) {
-      console.error(err);
-      res.status(500).json({ error: 'An error occurred while searching for businesses.' });
-      return;
-    }
-    
-    if (data.length === 0) {
-      res.status(404).json({ error: 'No businesses found matching the search criteria' });
-      return;
-    }
+  connection.query(categories_query, params, (err, data) => {
+      if (err) {
+          console.log(err);
+          res.json({ error: 'An error occurred while fetching data.' });
+      } else if (data.length === 0) {
+          console.log("0 entries");
+          res.json({ error: 'No businesses found with these requirements' });
+      } else {
+          res.json(data);
+      }
+  })
+};
 
-    res.json(data);
-  });
-}
 
 const validateFriends = async function(req, res) {
   const { friends } = req.body;  // Array of friend IDs from the request body
