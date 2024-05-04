@@ -15,6 +15,9 @@ app.get('/business_reviews/:business_id', routes.business_reviews);
 app.get('/business_tips/:business_id', routes.business_tips);
 app.get('/top_business_tips/:category', routes.top_business_tips)
 app.get('/search/businesses', routes.search_category);
+app.get('/active_users', routes.active_users);
+app.get('/user/:user_id', routes.getUserDetails);
+app.get('/isvalid/:user_id', routes.validateFriends);
 
 app.listen(config.server_port, () => {
   console.log(`Server running at http://${config.server_host}:${config.server_port}/`)

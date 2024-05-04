@@ -156,6 +156,54 @@ const top_business_tips = async function(req, res) {
   })
 }
 
+//Jack's query 1
+const active_users = async function(req, res) {
+  const limit = parseInt(req.query.limit, 10) || 10;
+
+  const active_users_query = `
+      SELECT *
+      FROM User u
+      ORDER BY u.review_count DESC
+      LIMIT ?;
+  `;
+
+  console.log("Fetching most active users with limit:", limit);
+
+  connection.query(active_users_query, [limit], (err, data) => {
+      if(err) {
+          console.log("Error fetching active users:", err);
+          res.status(500).json({ error: "Error fetching active users" });
+          return;
+      }
+      res.json(data);
+  });
+};
+
+const getUserDetails = async function(req, res) {
+  const { user_id } = req.params;
+
+  const userDetailsQuery = `
+      SELECT *
+      FROM User u
+      WHERE u.user_id = ?;
+  `;
+
+  console.log("Fetching details for user:", user_id);
+
+  connection.query(userDetailsQuery, [user_id], (err, data) => {
+      if(err) {
+          console.log("Error fetching user details:", err);
+          res.status(500).json({ error: "Error fetching user details", details: err.message });
+          return;
+      }
+      if (data.length === 0) {
+          res.status(404).json({ error: "User not found" });
+          return;
+      }
+      res.json(data[0]);
+  });
+};
+
 
 const search_category = async function(req, res) {
   const { city, category, zipCode, stars, rev_count, numTips } = req.query;
@@ -199,6 +247,36 @@ const search_category = async function(req, res) {
   });
 }
 
+const validateFriends = async function(req, res) {
+  const { friends } = req.body;  // Array of friend IDs from the request body
+
+  if (!friends || !Array.isArray(friends)) {
+    return res.status(400).json({ error: "Invalid input: Expected an array of friend IDs" });
+  }
+
+  const friendsQuery = `
+    SELECT user_id
+    FROM User
+    WHERE user_id IN (?);
+  `;
+
+  // We need to ensure that the array of friends is formatted correctly for the SQL IN clause
+  const formattedFriends = friends.map(id => id.trim());
+
+  console.log("Validating friend IDs:", formattedFriends);
+
+  connection.query(friendsQuery, [formattedFriends], (err, data) => {
+    if (err) {
+      console.log("Error validating friend IDs:", err);
+      return res.status(500).json({ error: "Error validating friend IDs", details: err.message });
+    }
+
+    // Extract valid user IDs from the data returned by the query
+    const validFriends = data.map(row => row.user_id);
+    
+    res.json({ validFriends });
+  });
+};
 
 
 module.exports = {
@@ -206,5 +284,8 @@ module.exports = {
   business_reviews,
   business_tips,
   top_business_tips,
-  search_category
+  search_category,
+  active_users,
+  getUserDetails,
+  validateFriends
 }
