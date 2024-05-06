@@ -13,6 +13,9 @@ const ReviewsLinksPage = () => {
                 <Button component={Link} to={`/all_reviews`} variant="contained" color="primary" style={{ margin: '0 8px' }}>
                     100 Most Recent Reviews
                 </Button>
+                <Button component={Link} to={`/select-min-review-for-ranked`} variant="contained" color="primary" style={{ margin: '0 8px' }}>
+                    Explore Top Business Reviews by Postal Code
+                </Button>
         </div>
     </div>
   );
