@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; 
-import { Box, TextField, Button } from '@mui/material';
+import { Box, TextField, Button, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 const config = require('../config.json');
 
@@ -90,9 +90,14 @@ const GeneralSearchResultsPage = () => {
                     <Link to={`/business/${item.business_id}`} style={{ textDecoration: 'none' }}> {/* Link to business detail page */}
                         <h2>{item.name}</h2>
                     </Link>
+                    <Link to={`/business_reviews/${item.business_id}`} style={{ textDecoration: 'none' }}> {/* Link to business reviews page */}
+                        <p>{item.review_count} reviews</p>
+                    </Link>
                     <p>{item.address}</p>
                     <p>{item.city}, {item.postal_code}</p>
-                    <p>Stars: {item.stars} ({item.review_count} reviews)</p>
+                    <Typography variant="body1">
+                            Stars: {"⭐".repeat(item.stars)}
+                    </Typography>
                 </div>
             ))}
         </div>

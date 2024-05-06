@@ -22,6 +22,8 @@ connection.connect(err => {
   console.log('Database connection successful!');
 });
 
+
+
 // Bella: Route to get general information on a Business that has been clicked on including reviews.
 //AKA what shows up when a user clicks on a business or searches for a business
 const business = async function(req, res) {
@@ -70,18 +72,51 @@ const business = async function(req, res) {
   });
 };
 
+const all_reviews = async function(req, res) {
+  let all_reviews_query = `
+    SELECT r.date, COALESCE(NULLIF(u.name, ''), 'Anonymous') AS name, r.text, r.stars, u.review_count, b.name AS business_name
+    FROM Review r
+    JOIN User u ON r.user_id = u.user_id
+    JOIN Business b ON r.business_id = b.business_id
+    ORDER BY r.date DESC
+    LIMIT 100;
+  `;
+  connection.query(all_reviews_query, (err, data) => {
+    if(err) { 
+      console.log(err);
+      res.json({ error: "Error fetching reviews" });
+      return;
+    }
+    if (data.length === 0) { //some businesses may have no reviews
+      res.json({error: 'No reviews found for this business'});
+      return;
+    }
+    
+    // Prepare the results to send back
+    const reviews = data.map(row => ({
+      date: row.date,
+      name: row.name,
+      text: row.text,
+      stars: row.stars,
+      review_count: row.review_count
+    }));
+
+    res.json(reviews);
+  });
+}
 
 //Bella: Route to get reviews from a business
 //At this point, the user has already selected a business and has now clicked the reviews button to look at the reviews
 const business_reviews = async function(req, res) {
   const business_id = req.params.business_id;
-  const business_reviews_query = `
+  let business_reviews_query = `
     SELECT r.date, COALESCE(NULLIF(u.name, ''), 'Anonymous') AS name, r.text, r.stars, u.review_count
     FROM Review r JOIN User u ON r.user_id=u.user_id
     WHERE business_id = ?
     ORDER BY date DESC
   `;
   console.log(`Fetching reviews for business ID: ${business_id}`);
+
   connection.query(business_reviews_query, [business_id], (err, data) => {
     if(err) { 
       console.log(err);
@@ -377,5 +412,6 @@ module.exports = {
   active_users,
   getUserDetails,
   validateFriends,
-  general_search
+  general_search,
+  all_reviews
 }

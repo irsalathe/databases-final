@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { indigo, amber } from '@mui/material/colors'
 import { createTheme } from "@mui/material/styles";
-
+import NavBar from './components/NavBar';
 import BusinessInfoPage from './pages/BusinessInfoPage';
 import BusinessReviewsPage from './pages/BusinessReviewsPage';
 import BusinessTipsPage from './pages/BusinessTipsPage';
@@ -16,6 +16,9 @@ import GeneralSearchResultsPage from './pages/GeneralSearchResultsPage';
 import BusinessRankedPostal from './pages/BusinessRankedPostal';
 import SelectMinReviewForRanked from './pages/SelectMinReviewForRanked';
 import GeneralSearchFilteredResultsPage from './pages/GeneralSearchFilteredResultPage';
+import BusinessLinksPage from './pages/BusinessLinksPage';
+import ReviewsLinksPage from './pages/ReviewsLinksPage';
+import AllReviewsPage from './pages/AllReviewsPage';
 // import NavBar from './components/NavBar';
 // import HomePage from './pages/HomePage';
 // import AlbumsPage from './pages/AlbumsPage';
@@ -37,9 +40,13 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
+        <NavBar />
         <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/businesses" element={<BusinessLinksPage />} />
+        <Route path="/reviews" element={<ReviewsLinksPage />} />
         <Route path="/business/:business_id" element={<BusinessInfoPage />} />
+        <Route path="/business_reviews/" element={<BusinessReviewsPage />} />
         <Route path="/business_reviews/:business_id" element={<BusinessReviewsPage />} />
         <Route path="/business_tips/:business_id" element={<BusinessTipsPage />} />
         <Route path="/select-category-for-tips" element={<CategorySearchForTipsPage />} />
@@ -50,6 +57,8 @@ export default function App() {
         <Route path="/select-min-review-for-ranked" element={<SelectMinReviewForRanked />} />
         <Route path="/top_business_postal" element={<BusinessRankedPostal />} />
         <Route path="/search/businesses" element={<GeneralSearchFilteredResultsPage />} />
+        <Route path="/all_businesses" element={<GeneralSearchResultsPage />} />
+        <Route path="/all_reviews" element={<AllReviewsPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
