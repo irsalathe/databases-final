@@ -21,6 +21,7 @@ app.get('/active_users', routes.active_users);
 app.get('/user/:user_id', routes.getUserDetails);
 app.get('/isvalid/:user_id', routes.validateFriends);
 app.get('/recent_5starbusiness_reviews', routes.recent_5starbusiness_reviews)
+app.get('/recent_5sb_tips', routes.recent_5sb_tips)
 
 app.listen(config.server_port, () => {
   console.log(`Server running at http://${config.server_host}:${config.server_port}/`)

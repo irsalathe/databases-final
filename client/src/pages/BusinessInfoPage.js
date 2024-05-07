@@ -73,7 +73,7 @@ export default function BusinessInfoPage() {
             {business.hours ? renderHoursTable(business.hours) : 'Not Available'}
             <Typography variant="h6" gutterBottom>Attributes:</Typography>
             <p>Attributes: {business.attributes}</p>
-            {business.reviews && business.reviews.length > 0 && (
+            {business.reviews && Array.isArray(business.reviews) && business.reviews.length > 0 && (
                 <div>
                     <Typography variant="h6">5 Most Recent Reviews</Typography>
                     {business.reviews.map((review, index) => (

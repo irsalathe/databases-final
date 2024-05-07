@@ -21,6 +21,7 @@ import ReviewsLinksPage from './pages/ReviewsLinksPage';
 import RecentReviewsPage from './pages/RecentReviewsPage';
 import TipsLinksPage from './pages/TipsLinksPage';
 import UserLinksPage from './pages/UserLinksPage';
+import RecentTipsPage from './pages/RecentTipsPage';
 // import NavBar from './components/NavBar';
 // import HomePage from './pages/HomePage';
 // import AlbumsPage from './pages/AlbumsPage';
@@ -63,6 +64,7 @@ export default function App() {
         <Route path="/search/businesses" element={<GeneralSearchFilteredResultsPage />} />
         <Route path="/all_businesses" element={<GeneralSearchResultsPage />} />
         <Route path="/recent_5starbusiness_reviews" element={<RecentReviewsPage />} />
+        <Route path="/recent_5sb_tips" element={<RecentTipsPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

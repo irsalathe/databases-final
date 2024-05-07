@@ -5,13 +5,13 @@ import { Button, Card, CardContent, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 const config = require('../config.json');
 
-export default function RecentReviewsPage() {
-    const [review, setReview] = useState(null);
+export default function RecentTipsPage() {
+    const [tips, setTips] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch(`http://${config.server_host}:${config.server_port}/recent_5starbusiness_reviews`)
+        fetch(`http://${config.server_host}:${config.server_port}/recent_5sb_tips`)
         .then(res => {
             if (!res.ok) {
                 throw new Error('Failed to fetch'); // Throws an error if response is not OK
@@ -19,7 +19,7 @@ export default function RecentReviewsPage() {
             return res.json();
         })
         .then(resJson => {
-            setReview(resJson);
+            setTips(resJson);
             setLoading(false);
         })
         .catch(error => {
@@ -30,41 +30,38 @@ export default function RecentReviewsPage() {
     
 
     if (loading) return <Typography>Loading...</Typography>;
-    if (error) return <Typography>Error loading review information!</Typography>;
-    if (!review.length) return <Typography>No reviews found!</Typography>;
+    if (error) return <Typography>Error loading tip information!</Typography>;
+    if (!tips.length) return <Typography>No tips found!</Typography>;
 
     return (
         <div>
             <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-                <Typography variant="h4" gutterBottom>Recent Reviews</Typography>
-                <Button component={Link} to={`/reviews`} variant="contained" color="primary" style={{ margin: '0 8px' }}>
+                <Typography variant="h4" gutterBottom>Recent Tips</Typography>
+                <Button component={Link} to={`/explore-tips`} variant="contained" color="primary" style={{ margin: '0 8px' }}>
                     Back
                 </Button>
             </div>
-            {review.map((review, index) => (
+            {tips.map((tips, index) => (
                 <Card key={index} style={{ marginBottom: 8 }}>
                     <CardContent>
                         <Typography color="textSecondary" gutterBottom>
-                            Reviewer Name:  
-                            <Link to={`/user/${review.user_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                {review.username}
+                            Tipper Name:  
+                            <Link to={`/user/${tips.user_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                                {tips.username}
                             </Link> 
-                            ({review.reviewCount} reviews)
+                            ({tips.review_count} tips)
                         </Typography>
                         <Typography color="textSecondary" gutterBottom>
                             Business Name:  
-                            <Link to={`/business/${review.business_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                            {review.businessName}
+                            <Link to={`/business/${tips.business_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            {tips.businessName}
                             </Link>
                         </Typography>
                         <Typography color="textSecondary" gutterBottom>
-                            Date: {new Date(review.date).toLocaleDateString()}
+                            Date: {new Date(tips.date).toLocaleDateString()}
                         </Typography>
                         <Typography variant="body2">
-                            {review.text}
-                        </Typography>
-                        <Typography variant="body1">
-                            Stars: {"⭐".repeat(review.stars)}
+                            {tips.text}
                         </Typography>
                     </CardContent>
                 </Card>

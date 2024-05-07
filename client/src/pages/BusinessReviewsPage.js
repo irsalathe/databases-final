@@ -44,9 +44,11 @@ export default function BusinessReviewsPage() {
             {review.map((review, index) => (
                 <Card key={index} style={{ marginBottom: 8 }}>
                     <CardContent>
+                    <Link to={`/user/${review.user_id}`} style={{ textDecoration: 'none' }}>
                         <Typography color="textSecondary" gutterBottom>
                             Reviewer Name: {review.name} ({review.review_count} reviews)
                         </Typography>
+                    </Link>
                         <Typography color="textSecondary" gutterBottom>
                             Date: {new Date(review.date).toLocaleDateString()}
                         </Typography>

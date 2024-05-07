@@ -22,8 +22,6 @@ connection.connect(err => {
   console.log('Database connection successful!');
 });
 
-
-
 // Bella: Route to get general information on a Business that has been clicked on including reviews.
 //AKA what shows up when a user clicks on a business or searches for a business
 const business = async function(req, res) {
@@ -65,52 +63,103 @@ const business = async function(req, res) {
 
       const result = {
         ...businessData[0],
-        reviews: reviewsData.length > 0 ? reviewsData : 'No reviews found'
+        reviews: reviewsData.length > 0 ? reviewsData : []  // Return an empty array if no reviews
       };
       res.json(result);
     });
   });
-};
+}
+
+
+const recent_5sb_tips = async function(req, res) {
+  console.log('stop 1');
+  let sql = `
+    SELECT t.text, t.date, t.user_id, t.business_id, b.name AS business_name, u.name AS username, u.review_count
+    FROM (
+      SELECT text, date, user_id, business_id
+      FROM Tip
+      WHERE date >= '2021-01-01 00:00:00'
+      ) AS t
+    JOIN User u ON t.user_id = u.user_id
+    JOIN (
+      SELECT business_id, name
+      FROM Business
+      WHERE stars = 5
+    ) AS b ON t.business_id = b.business_id
+    ORDER BY t.date DESC;
+  `
+  console.log('starting query');
+  connection.query(sql, (err, data) => {
+    console.log('Query callback called');
+    if (err) { 
+        console.log('Query error:', err);
+        res.json({ error: "Error fetching tips" });
+        return;
+    }
+    console.log('Query successful, data length:', data.length);
+    if (data.length === 0) {
+        res.json({error: 'No tips found for this business'});
+        return;
+    }
+    
+    // Prepare the results to send back
+    const tips = data.map(row => ({
+      date: row.date,
+      business_id: row.business_id,
+      text: row.text,
+      user_id: row.user_id,
+      username: row.username,
+      review_count: row.review_count
+    }));
+
+    res.json(tips);
+  });
+}
 
 
 //recent reviews of 5 star businesses
 const recent_5starbusiness_reviews = async function(req, res) {
   console.log('stop 1');
   let sql = `
-    SELECT DISTINCT
-      filteredReviews.text,
-      filteredReviews.stars AS review_stars,
-      filteredReviews.date,
-      b5s.name AS business_name,
-      u.name AS user_name,
-      u.review_count,
-      b5s.stars AS business_stars
-    FROM (SELECT * FROM Review WHERE date >= '2020-01-01 00:00:00') AS filteredReviews
-    JOIN User u ON filteredReviews.user_id = u.user_id
-    JOIN business_5star b5s ON filteredReviews.business_id = b5s.business_id
-    ORDER BY filteredReviews.date DESC;
+    SELECT r.text, r.stars AS review_stars, r.date, r.user_id, r.business_id, b_filtered.name AS business_name, u.name AS username, u.review_count
+    FROM (
+        SELECT *
+        FROM Reviews
+        WHERE date >= '2022-01-01  00:00:00'
+        ) AS r
+    JOIN User u ON r.user_id = u.user_id
+    JOIN (
+        SELECT business_id, name
+        FROM Business
+        WHERE stars = 5
+    ) AS b_filtered ON r.business_id = b_filtered.business_id
+    ORDER BY r.date DESC;
   `
   console.log('starting query');
   connection.query(sql, (err, data) => {
-    if(err) { 
-      console.log(err);
-      res.json({ error: "Error fetching reviews" });
-      return;
+    console.log('Query callback called');
+    if (err) { 
+        console.log('Query error:', err);
+        res.json({ error: "Error fetching reviews" });
+        return;
     }
-    if (data.length === 0) { //some businesses may have no reviews
-      res.json({error: 'No reviews found for this business'});
-      return;
+    console.log('Query successful, data length:', data.length);
+    if (data.length === 0) {
+        res.json({error: 'No reviews found for this business'});
+        return;
     }
     
     // Prepare the results to send back
     const reviews = data.map(row => ({
       date: row.date,
-      name: row.name,
+      business_id: row.business_id,
+      businessName: row.business_name, 
       text: row.text,
-      stars: row.stars,
+      user_id: row.user_id,
+      stars: row.review_stars, 
+      username: row.username, 
       review_count: row.review_count
     }));
-
     res.json(reviews);
   });
 };
@@ -180,7 +229,7 @@ const business_tips = async function(req, res) {
 const top_business_tips = async function(req, res) {
   const category = req.params.category;
   const top_business_by_tips_query =`
-    SELECT b.name, b.address, b.stars, t.text AS tip_text, t.compliment_count
+    SELECT b.business_id, b.name, b.address, b.stars, t.text AS tip_text, t.compliment_count
     FROM Business b
     JOIN Tip t ON b.business_id = t.business_id
     WHERE b.categories LIKE CONCAT('%', ?, '%') 
@@ -201,6 +250,9 @@ const top_business_tips = async function(req, res) {
     }
   })
 }
+
+
+
 
 const general_search = async function(req, res) {
   const { city, postal_code, categories } = req.query;
@@ -423,5 +475,6 @@ module.exports = {
   getUserDetails,
   validateFriends,
   general_search,
-  recent_5starbusiness_reviews
+  recent_5starbusiness_reviews,
+  recent_5sb_tips
 }

@@ -48,7 +48,11 @@ export default function TopBusinessesTipPage() {
                 <TableBody>
                     {businessTips.length > 0 ? businessTips.map((tip, index) => (
                         <TableRow key={index}>
-                            <TableCell>{tip.name}</TableCell>
+                            <TableCell>
+                                <Link to={`/business/${tip.business_id}`}>
+                                {tip.name}
+                                </Link>
+                            </TableCell>
                             <TableCell>{tip.address}</TableCell>
                             <TableCell>{tip.stars}</TableCell>
                             <TableCell>{tip.tip_text}</TableCell>

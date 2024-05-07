@@ -13,6 +13,10 @@ const TipsLinksPage = () => {
                 <Button component={Link} to={`/select-category-for-tips`} variant="contained" color="primary" style={{ margin: '0 8px' }}>
                     Explore Top Tips By Business Category
                 </Button>
+                <Button component={Link} to={`/recent_5sb_tips`} variant="contained" color="primary" style={{ margin: '0 8px' }}>
+                    Explore Recent Tips on 5 Star Businesses
+                </Button>
+
         </div>
     </div>
   );
