@@ -72,7 +72,6 @@ export default function HomePage() {
                     Search
                 </Button>
             </Box>
-            <Button component={Link} to={`/select-category-for-tips`} variant="contained">Explore Top Tips By Business Category</Button>
         </Box>
     );
 }

@@ -72,16 +72,26 @@ const business = async function(req, res) {
   });
 };
 
-const all_reviews = async function(req, res) {
-  let all_reviews_query = `
-    SELECT r.date, COALESCE(NULLIF(u.name, ''), 'Anonymous') AS name, r.text, r.stars, u.review_count, b.name AS business_name
-    FROM Review r
-    JOIN User u ON r.user_id = u.user_id
-    JOIN Business b ON r.business_id = b.business_id
-    ORDER BY r.date DESC
-    LIMIT 100;
-  `;
-  connection.query(all_reviews_query, (err, data) => {
+
+//recent reviews of 5 star businesses
+const recent_5starbusiness_reviews = async function(req, res) {
+  console.log('stop 1');
+  let sql = `
+    SELECT DISTINCT
+      filteredReviews.text,
+      filteredReviews.stars AS review_stars,
+      filteredReviews.date,
+      b5s.name AS business_name,
+      u.name AS user_name,
+      u.review_count,
+      b5s.stars AS business_stars
+    FROM (SELECT * FROM Review WHERE date >= '2020-01-01 00:00:00') AS filteredReviews
+    JOIN User u ON filteredReviews.user_id = u.user_id
+    JOIN business_5star b5s ON filteredReviews.business_id = b5s.business_id
+    ORDER BY filteredReviews.date DESC;
+  `
+  console.log('starting query');
+  connection.query(sql, (err, data) => {
     if(err) { 
       console.log(err);
       res.json({ error: "Error fetching reviews" });
@@ -103,7 +113,7 @@ const all_reviews = async function(req, res) {
 
     res.json(reviews);
   });
-}
+};
 
 //Bella: Route to get reviews from a business
 //At this point, the user has already selected a business and has now clicked the reviews button to look at the reviews
@@ -413,5 +423,5 @@ module.exports = {
   getUserDetails,
   validateFriends,
   general_search,
-  all_reviews
+  recent_5starbusiness_reviews
 }

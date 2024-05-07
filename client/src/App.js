@@ -18,7 +18,9 @@ import SelectMinReviewForRanked from './pages/SelectMinReviewForRanked';
 import GeneralSearchFilteredResultsPage from './pages/GeneralSearchFilteredResultPage';
 import BusinessLinksPage from './pages/BusinessLinksPage';
 import ReviewsLinksPage from './pages/ReviewsLinksPage';
-import AllReviewsPage from './pages/AllReviewsPage';
+import RecentReviewsPage from './pages/RecentReviewsPage';
+import TipsLinksPage from './pages/TipsLinksPage';
+import UserLinksPage from './pages/UserLinksPage';
 // import NavBar from './components/NavBar';
 // import HomePage from './pages/HomePage';
 // import AlbumsPage from './pages/AlbumsPage';
@@ -43,6 +45,8 @@ export default function App() {
         <NavBar />
         <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/explore-tips" element={<TipsLinksPage />} />
+        <Route path="/explore-users" element={<UserLinksPage />} />
         <Route path="/businesses" element={<BusinessLinksPage />} />
         <Route path="/reviews" element={<ReviewsLinksPage />} />
         <Route path="/business/:business_id" element={<BusinessInfoPage />} />
@@ -58,7 +62,7 @@ export default function App() {
         <Route path="/top_business_postal" element={<BusinessRankedPostal />} />
         <Route path="/search/businesses" element={<GeneralSearchFilteredResultsPage />} />
         <Route path="/all_businesses" element={<GeneralSearchResultsPage />} />
-        <Route path="/all_reviews" element={<AllReviewsPage />} />
+        <Route path="/recent_5starbusiness_reviews" element={<RecentReviewsPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

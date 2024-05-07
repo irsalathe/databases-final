@@ -37,8 +37,10 @@ export default function NavBar() {
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <NavText href='/' text='A Travelers Guide to California' isMain />
-          <NavText href='/businesses' text='Explore Businesses' />
-          <NavText href='/reviews' text='Explore Reviews' />
+          <NavText href='/businesses' text='Businesses' />
+          <NavText href='/reviews' text='Reviews' />
+          <NavText href='/explore-users' text='Users'/>
+          <NavText href='/explore-tips' text='Tips'/>
           {/* <NavText href='/albums' text='ALBUMS' />
           <NavText href='/songs' text='SONGS' /> */}
         </Toolbar>
